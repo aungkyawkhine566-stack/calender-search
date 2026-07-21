@@ -1,34 +1,311 @@
 <!DOCTYPE html>
-<html>
+<html lang="my">
 <head>
-<meta charset="UTF-8">
-<title>Calendar Search</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calendar Search</title>
+    
+    <!-- LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2.21.0/sdk.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 24px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        h1 {
+            font-size: 24px;
+            color: #1DB446;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 6px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: white;
+        }
+        input:focus, select:focus {
+            border-color: #1DB446;
+            outline: none;
+        }
+        .btn-search {
+            width: 100%;
+            background: #1DB446;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 24px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+        .btn-search:hover {
+            background: #17a33b;
+        }
+        .btn-search:active {
+            transform: scale(0.98);
+        }
+        .btn-search:disabled {
+            background: #a0d4b0;
+            cursor: not-allowed;
+        }
+        #loading {
+            text-align: center;
+            color: #1DB446;
+            font-weight: 600;
+            margin-top: 16px;
+            display: none;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        #result.success {
+            display: block;
+            background: #e8f5e9;
+            border-left: 4px solid #1DB446;
+            color: #1e3a2a;
+        }
+        #result.error {
+            display: block;
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            color: #4a1a1a;
+        }
+        #result.notfound {
+            display: block;
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            color: #4a2a1a;
+        }
+        .result-item {
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding: 8px 0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: 600;
+            color: #555;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
 </head>
 <body>
 
-<h2>ရွေးချယ်ပါ</h2>
+<div class="container">
+    <h1>📅 Calendar Search</h1>
+    <p class="subtitle">ရက်စွဲ သို့မဟုတ် လှေနာမည်ဖြင့် ရှာပါ</p>
 
-<input type="date" id="date">
+    <label for="searchDate">📆 ရက်စွဲ</label>
+    <input type="date" id="searchDate">
 
-<button onclick="send()">Search</button>
+    <label for="boatName">🚤 လှေနာမည်</label>
+    <input type="text" id="boatName" placeholder="ဥပမာ — Aung Shwe">
+
+    <button class="btn-search" id="searchBtn">🔍 ရှာမယ်</button>
+
+    <div id="loading">⏳ ရှာဖွေနေပါတယ်...</div>
+    <div id="result"></div>
+</div>
+
+<div class="footer">⚡ LIFF + n8n + Google Sheets</div>
 
 <script>
-function send(){
+    // ========================================
+    // 🔥 ခင်ဗျားရဲ့ LIFF ID ကို ဒီမှာထည့်ပါ
+    // ========================================
+    const LIFF_ID = '1656123456-abcdefg';  // ← ပြောင်းပါ
 
-const date=document.getElementById("date").value;
+    // ========================================
+    // 🔥 ခင်ဗျားရဲ့ n8n Webhook URL ကို ဒီမှာထည့်ပါ
+    // ========================================
+    const WEBHOOK_URL = 'https://your-n8n.app/webhook';  // ← ပြောင်းပါ
 
-fetch("https://sage-loon.pikapod.net/webhook/calendar-search",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-date:date
-})
-});
+    // ========================================
+    // LIFF Initialization
+    // ========================================
+    liff.init({ liffId: LIFF_ID })
+        .then(() => {
+            console.log('✅ LIFF initialized successfully');
+        })
+        .catch((err) => {
+            console.error('❌ LIFF init error:', err);
+            // LIFF မှာ error ဖြစ်ရင်လည်း ဆက်အလုပ်လုပ်နိုင်အောင်
+            // ဘာမှမလုပ်ဘူး
+        });
 
-alert("ပို့ပြီးပါပြီ");
-}
+    // ========================================
+    // DOM References
+    // ========================================
+    const searchDate = document.getElementById('searchDate');
+    const boatName = document.getElementById('boatName');
+    const searchBtn = document.getElementById('searchBtn');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+
+    // ========================================
+    // Search Function
+    // ========================================
+    function performSearch() {
+        const date = searchDate.value;
+        const boat = boatName.value.trim();
+
+        // Validation
+        if (!date && !boat) {
+            result.className = 'error';
+            result.innerHTML = '⚠️ ကျေးဇူးပြုပြီး ရက်စွဲ သို့မဟုတ် လှေနာမည် အနည်းဆုံးတစ်ခု ထည့်ပါ။';
+            result.style.display = 'block';
+            return;
+        }
+
+        // Disable button & show loading
+        searchBtn.disabled = true;
+        loading.style.display = 'block';
+        result.style.display = 'none';
+
+        // Prepare data to send
+        const payload = {
+            date: date,
+            boatName: boat
+        };
+
+        console.log('📤 Sending to n8n:', payload);
+
+        // Send to n8n Webhook
+        fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('📥 Received from n8n:', data);
+
+            // Hide loading, enable button
+            loading.style.display = 'none';
+            searchBtn.disabled = false;
+
+            // Check if data is empty
+            if (!data || (Array.isArray(data) && data.length === 0)) {
+                result.className = 'notfound';
+                result.innerHTML = '❌ <b>မတွေ့ပါ</b><br><br>သင်ရှာသော အချက်အလက်ကို စာရင်းထဲတွင် မတွေ့ရပါ။';
+                result.style.display = 'block';
+                return;
+            }
+
+            // Handle both array and single object
+            const items = Array.isArray(data) ? data : [data];
+
+            // Build result HTML
+            let html = '✅ <b>တွေ့ရှိချက်</b><br><br>';
+            items.forEach((item, index) => {
+                html += `<div class="result-item">`;
+                html += `<span class="label">📆 ရက်စွဲ:</span> ${item.Date || item.date || '-'}<br>`;
+                html += `<span class="label">🚤 လှေနာမည်:</span> ${item['Boat Name'] || item.boatName || '-'}<br>`;
+                html += `<span class="label">⚖️ စုစုပေါင်း:</span> ${item['Total Kg'] || item.totalKg || '-'} Kg<br>`;
+                html += `<span class="label">📝 မှတ်ချက်:</span> ${item.Remark || item.remark || '-'}`;
+                html += `</div>`;
+            });
+
+            result.className = 'success';
+            result.innerHTML = html;
+            result.style.display = 'block';
+
+        })
+        .catch((error) => {
+            console.error('❌ Fetch error:', error);
+            loading.style.display = 'none';
+            searchBtn.disabled = false;
+            result.className = 'error';
+            result.innerHTML = `❌ <b>အမှားရှိပါသည်</b><br><br>${error.message}`;
+            result.style.display = 'block';
+        });
+    }
+
+    // ========================================
+    // Event Listeners
+    // ========================================
+    searchBtn.addEventListener('click', performSearch);
+
+    // Enter key support
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const active = document.activeElement;
+            if (active === searchDate || active === boatName) {
+                performSearch();
+            }
+        }
+    });
+
+    // Auto-search when both fields have value (optional)
+    // ဒါက မထည့်ချင်ရင် ဖျက်လို့ရတယ်
+    let searchTimeout;
+    [searchDate, boatName].forEach(field => {
+        field.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            if (searchDate.value && boatName.value) {
+                searchTimeout = setTimeout(performSearch, 500);
+            }
+        });
+    });
+
+    console.log('✅ Calendar Search app ready!');
 </script>
 
 </body>
