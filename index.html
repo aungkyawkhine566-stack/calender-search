@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Calendar Search</title>
+</head>
+<body>
+
+<h2>ရွေးချယ်ပါ</h2>
+
+<input type="date" id="date">
+
+<button onclick="send()">Search</button>
+
+<script>
+function send(){
+
+const date=document.getElementById("date").value;
+
+fetch("YOUR_N8N_WEBHOOK_URL",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+date:date
+})
+});
+
+alert("ပို့ပြီးပါပြီ");
+}
+</script>
+
+</body>
+</html>
