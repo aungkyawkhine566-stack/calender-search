@@ -1,57 +1,163 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Protein Calendar</title><script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script><style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Protein Calendar</title><script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script><style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-font-family:sans-serif;
-padding:20px;
-text-align:center;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
-input{
-padding:10px;
-font-size:18px;
+.card{
+    width:100%;
+    max-width:400px;
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    text-align:center;
 }
 
-#result{
-margin-top:20px;
-font-size:22px;
-font-weight:bold;
+.logo{
+    font-size:50px;
+    margin-bottom:10px;
 }
-</style></head><body><h2>Protein Calendar</h2><input type="date" id="datePicker"><div id="result"></div><script>
+
+h1{
+    color:#333;
+    margin-bottom:5px;
+}
+
+.subtitle{
+    color:#777;
+    margin-bottom:25px;
+}
+
+.date-box{
+    margin-bottom:20px;
+}
+
+input[type="date"]{
+    width:100%;
+    padding:14px;
+    border:2px solid #ddd;
+    border-radius:12px;
+    font-size:16px;
+}
+
+.result{
+    margin-top:20px;
+    display:none;
+    background:#f7f8ff;
+    padding:20px;
+    border-radius:15px;
+}
+
+.result h3{
+    color:#444;
+    margin-bottom:10px;
+}
+
+.protein{
+    font-size:28px;
+    font-weight:bold;
+    color:#4f46e5;
+}
+
+.loading{
+    color:#666;
+    margin-top:15px;
+}
+</style></head><body><div class="card"><div class="logo">🥗</div>
+
+<h1>Protein Calendar</h1>
+
+<p class="subtitle">
+    Select a date to view protein information
+</p>
+
+<div class="date-box">
+    <input type="date" id="datePicker">
+</div>
+
+<div id="loading" class="loading"></div>
+
+<div id="result" class="result">
+    <h3>Protein Result</h3>
+    <div id="proteinText" class="protein"></div>
+</div>
+
+</div><script>
 
 async function initLiff() {
 
-  await liff.init({
-    liffId: "2010771379-0v8talZ9"
-  });
+    try {
 
+        await liff.init({
+            liffId: "2010771379-0v8talZ9"
+        });
+
+    } catch(err) {
+
+        console.log(err);
+
+    }
 }
 
-document
-.getElementById("datePicker")
+document.getElementById("datePicker")
 .addEventListener("change", async function() {
 
-  const selectedDate = this.value;
+    const date = this.value;
 
-  const response = await fetch(
-    "https://YOUR-N8N-DOMAIN/webhook/protein",
-    {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        date:selectedDate
-      })
+    document.getElementById("loading").innerText =
+        "Loading...";
+
+    document.getElementById("result").style.display =
+        "none";
+
+    try {
+
+        const response = await fetch(
+            "https://YOUR-N8N-DOMAIN/webhook/protein",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    date:date
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("proteinText")
+            .innerText = data.protein;
+
+        document.getElementById("result")
+            .style.display = "block";
+
+    } catch(error){
+
+        document.getElementById("proteinText")
+            .innerText = "Unable to load data";
+
+        document.getElementById("result")
+            .style.display = "block";
     }
-  );
 
-  const data = await response.json();
-
-  document.getElementById("result").innerHTML =
-      data.protein;
+    document.getElementById("loading").innerText = "";
 
 });
 
