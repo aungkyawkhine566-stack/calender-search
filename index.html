@@ -259,10 +259,10 @@ document.getElementById("boatName").innerText =
 "Boat Name : " + data.boat_name;
 
 document.getElementById("tvbn").innerText =
-"TvBN : " + data.tvbn + "%";
+"TvBN : " + (data.tvbn *100).toFixed(0) + "%";
 
 document.getElementById("proteinText").innerText =
-"Protein : " + data.protein + "%";
+"Protein : " + (data.protein *100).toFixed(2) + "%";
         document.getElementById("result")
         .style.display = "block";
 
