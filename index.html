@@ -43,6 +43,12 @@ body{
     font-size:60px;
     margin-bottom:10px;
 }
+    .company-name{
+    text-align:center;
+    font-size:30px;
+    font-weight:700;
+    color:#333;
+}
 
 .title{
     text-align:center;
@@ -122,7 +128,7 @@ input[type="date"]{
 <div class="card">
 
 <div class="logo"></div>
-    <div class="title">
+    <div class="company-name">
 Vantage Fishmeal
 </div>
 
@@ -146,10 +152,13 @@ id="datePicker"
 <div id="result" class="result">
 
 <div class="result-header">
-Protein Information
+Lab Analysis Result
 </div>
 
 <div id="selectedDate" class="date"></div>
+    <div id="lotNo" class="lotNo"></div>
+    <div id="boatName" class="boatName"></div>
+    <div id="tvbn" class="tvbn"></div>
 
 <div id="proteinText" class="protein"></div>
 
@@ -219,11 +228,20 @@ document
         );
 
         const data = await response.json();
-        console.log(data.protein);
+        
 
         document.getElementById("selectedDate")
         .innerText =
         " Date : " + data.Date;
+          document.getElementById("lotNo")
+        .innerText =
+        "Lot No: " + data.lotNo;
+          document.getElementById("boatName")
+        .innerText =
+        "Boat Name: " + data.boatName;
+          document.getElementById("tvbn")
+        .innerText =
+        "TvBn " + data.tvbn;
 
         document.getElementById("proteinText")
         .innerText =
