@@ -228,22 +228,23 @@ document
         );
 
         const data = await response.json();
-        console.log(data);
+        console.log(data["Lot No"]);
+        console.log(data["Boat Name"]);
 
         document.getElementById("selectedDate").innerText =
-"Date : " + data.date;
+"Date : " + data.Date;
 
 document.getElementById("lotNo").innerText =
-"Lot No : " + data.lotNo;
+"Lot No : " + data["Lot No"];
 
 document.getElementById("boatName").innerText =
-"Boat Name : " + data.boatName;
+"Boat Name : " + data["Boat Name"];
 
 document.getElementById("tvbn").innerText =
-"TvBN : " + data.tvbn;
+"TvBN : " + data.TvBN;
 
 document.getElementById("proteinText").innerText =
-"Protein : " + data.protein;
+"Protein : " + data.Protein;
         document.getElementById("result")
         .style.display = "block";
 
