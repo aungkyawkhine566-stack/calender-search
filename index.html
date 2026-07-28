@@ -273,7 +273,7 @@ cards += `
 <div class="result-card">
 
     <div class="card-title">
-        ${item.Boat_Name}
+        ${item["Boat Name"]}
     </div>
 
     <div class="card-row">
@@ -281,15 +281,15 @@ cards += `
     </div>
 
     <div class="card-row">
-        <strong>Lot No:</strong> ${item.Lot_No}
+        <strong>Lot No:</strong> ${item["Lot No"]}
     </div>
 
     <div class="card-row">
-        <strong>Protein:</strong> ${item.Protein* 100 + "%"}
+        <strong>Protein:</strong> ${item.Protein}%
     </div>
 
     <div class="card-row">
-        <strong>TvBN:</strong> ${item.TvBN * 100 + "%"}
+        <strong>TvBN:</strong> ${item.TvBN}%
     </div>
 
 </div>
