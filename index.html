@@ -130,6 +130,29 @@ input[type="date"]{
 .guide h3{
     margin-bottom:10px;
 }
+    .result{
+    margin-top:20px;
+}
+
+.result-card{
+    background:#ffffff;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-title{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:10px;
+    color:#4f46e5;
+}
+
+.card-row{
+    margin:6px 0;
+    color:#333;
+}
 
 </style>
 </head>
@@ -167,14 +190,7 @@ id="datePicker"
 <div class="result-header">
 Lab Analysis Result
 </div>
-
-<div id="selectedDate" class="info-row"></div>
-    <div id="lotNo" class="info-row"></div>
-    <div id="boatName" class="info-row"></div>
-    <div id="tvbn" class="info-row"></div>
-
-<div id="proteinText" class="protein"></div>
-
+<div id="result" class="result"></div>
 </div>
 
 <div class="footer">
@@ -246,25 +262,43 @@ document
         );
 
         const data = await response.json();
-        console.log(data);
-       
+        const resultDiv = document.getElementById("result");
 
-        document.getElementById("selectedDate").innerText =
-"Date : " + data.date;
+let cards = "";
 
-document.getElementById("lotNo").innerText =
-"Lot No : " + data.lot_no;
+data.forEach(item => {
 
-document.getElementById("boatName").innerText =
-"Boat Name : " + data.boat_name;
+cards += `
+<div class="result-card">
 
-document.getElementById("tvbn").innerText =
-"TvBN : " + (data.tvbn *100).toFixed(0) + "%";
+    <div class="card-title">
+        ${item.boat_name}
+    </div>
 
-document.getElementById("proteinText").innerText =
-"Protein : " + (data.protein *100).toFixed(2) + "%";
-        document.getElementById("result")
-        .style.display = "block";
+    <div class="card-row">
+        <strong>Date:</strong> ${item.date}
+    </div>
+
+    <div class="card-row">
+        <strong>Lot No:</strong> ${item.lot_no}
+    </div>
+
+    <div class="card-row">
+        <strong>Protein:</strong> ${item.protein}
+    </div>
+
+    <div class="card-row">
+        <strong>TvBN:</strong> ${item.tvbn}
+    </div>
+
+</div>
+`;
+
+});
+
+resultDiv.innerHTML = cards;
+resultDiv.style.display = "block";
+        
 
     }catch(error){
 
