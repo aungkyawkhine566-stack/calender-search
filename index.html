@@ -230,23 +230,20 @@ document
         const data = await response.json();
         
 
-        document.getElementById("selectedDate")
-        .innerText =
-        " Date : " + data.Date;
-          document.getElementById("lotNo")
-        .innerText =
-        "Lot No: " + data.lot_no;
-          document.getElementById("boatName")
-        .innerText =
-        "Boat Name: " + data.boat_name;
-          document.getElementById("tvbn")
-        .innerText =
-        "TvBN: " + data.tvbn;
+        document.getElementById("selectedDate").innerText =
+"Date : " + data.date;
 
-        document.getElementById("proteinText")
-        .innerText =
-        "Portein:" + data.Protein;
+document.getElementById("lotNo").innerText =
+"Lot No : " + data.lotNo;
 
+document.getElementById("boatName").innerText =
+"Boat Name : " + data.boatName;
+
+document.getElementById("tvbn").innerText =
+"TvBN : " + data.tvbn;
+
+document.getElementById("proteinText").innerText =
+"Protein : " + data.protein;
         document.getElementById("result")
         .style.display = "block";
 
