@@ -93,7 +93,7 @@ input[type="date"]{
     margin-bottom:12px;
 }
 
-.date{
+.info-row{
     font-size:16px;
     color:#444;
     margin-bottom:10px;
@@ -155,10 +155,10 @@ id="datePicker"
 Lab Analysis Result
 </div>
 
-<div id="selectedDate" class="date"></div>
-    <div id="lotNo" class="lotNo"></div>
-    <div id="boatName" class="boatName"></div>
-    <div id="tvbn" class="tvbn"></div>
+<div id="selectedDate" class="info-row"></div>
+    <div id="lotNo" class="info-row"></div>
+    <div id="boatName" class="info-row"></div>
+    <div id="tvbn" class="info-row"></div>
 
 <div id="proteinText" class="protein"></div>
 
@@ -245,7 +245,7 @@ document
 
         document.getElementById("proteinText")
         .innerText =
-        "Portein " + data.Protein;
+        "Portein:" + data.Protein;
 
         document.getElementById("result")
         .style.display = "block";
