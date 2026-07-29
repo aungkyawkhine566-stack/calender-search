@@ -262,10 +262,8 @@ document
         );
 
         const data = await response.json();
-        if(!Array.isArray(data)){
-    console.log("Not Array:", data);
-    return;
-}
+
+    console.log(data);
         const resultDiv = document.getElementById("resultContent");
 
 let resultcards = "";
