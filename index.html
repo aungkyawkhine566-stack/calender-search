@@ -261,9 +261,9 @@ document
             }
         );
 
-        const data = await response.json();
-
-    console.log(data);
+    console.log(response.status);
+        const text = await response.text();
+        console.log(text);
         const resultDiv = document.getElementById("resultContent");
 
 let resultcards = "";
