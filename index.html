@@ -236,13 +236,14 @@ document
 .getElementById("datePicker")
 .addEventListener("change", async function(){
 
-    const selectedDate = this.value;
+    alert("Date Selected");
 
-    console.log("Sending date:",selectedDate);
+    const selectedDate = this.value;
 
     document.getElementById("loading")
     .innerText = "Loading...";
 
+});
     document.getElementById("result")
     .style.display = "none";
 
