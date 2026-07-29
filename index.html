@@ -190,7 +190,7 @@ id="datePicker"
 <div class="result-header">
 Lab Analysis Result
 </div>
-<div id="result" class="result"></div>
+<div id="resultContent"></div>
 </div>
 
 <div class="footer">
@@ -262,8 +262,11 @@ document
         );
 
         const data = await response.json();
-        console.log(data);
-        const resultDiv = document.getElementById("result");
+        if(!Array.isArray(data)){
+    console.log("Not Array:", data);
+    return;
+}
+        const resultDiv = document.getElementById("resultContent");
 
 let resultcards = "";
 
@@ -303,17 +306,14 @@ resultDiv.style.display = "block";
 
     }catch(error){
 
-        console.error(error);
+    console.error(error);
 
-        document.getElementById("selectedDate")
-        .innerText = "";
+    document.getElementById("resultContent").innerHTML =
+    "<div class='card-row'>❌ Not found data</div>";
 
-        document.getElementById("proteinText")
-        .innerText =
-        "❌ Not found data";
-
-        document.getElementById("result")
-        .style.display = "block";
+    document.getElementById("result")
+    .style.display = "block";
+}
     }
 
     document.getElementById("loading")
