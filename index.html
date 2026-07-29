@@ -210,119 +210,105 @@ Powered by LINE LIFF + n8n
 
 const LIFF_ID = "2010771379-0v8talZ9";
 
-/* YOUR N8N WEBHOOK URL */
 const WEBHOOK_URL =
 "https://sage-loon.pikapod.net/webhook-test/protein";
 
-async function initLiff(){
-
-    try{
-
+async function initLiff() {
+    try {
         await liff.init({
             liffId: LIFF_ID
         });
 
         console.log("LIFF Ready");
 
-    }catch(err){
-
+    } catch (err) {
         console.error(err);
-
     }
-
 }
 
-document
-.getElementById("datePicker")
-.addEventListener("change", async function(){
-
-    alert("Date Selected");
+document.getElementById("datePicker")
+.addEventListener("change", async function () {
 
     const selectedDate = this.value;
 
-    document.getElementById("loading")
-    .innerText = "Loading...";
+    document.getElementById("loading").innerText = "Loading...";
 
-});
-    document.getElementById("result")
-    .style.display = "none";
+    document.getElementById("result").style.display = "none";
 
-    try{
+    try {
 
         const response = await fetch(
             WEBHOOK_URL,
             {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({
-                    date:selectedDate
+                body: JSON.stringify({
+                    date: selectedDate
                 })
             }
         );
 
-    console.log(response.status);
-        const text = await response.text();
-        console.log(text);
-        const resultDiv = document.getElementById("resultContent");
+        const data = await response.json();
 
-let resultcards = "";
+        console.log(data);
 
-data.forEach(item => {
+        const resultDiv =
+            document.getElementById("resultContent");
 
-resultcards += `
-<div class="result-card">
+        let resultcards = "";
 
-    <div class="card-title">
-        ${item["Boat Name"]}
-    </div>
+        data.forEach(item => {
 
-    <div class="card-row">
-        <strong>Date:</strong> ${item["Date"]}
-    </div>
+            resultcards += `
+            <div class="result-card">
 
-    <div class="card-row">
-        <strong>Lot No:</strong> ${item["Lot No"]}
-    </div>
+                <div class="card-title">
+                    ${item["Boat Name"]}
+                </div>
 
-    <div class="card-row">
-        <strong>Protein:</strong> ${(item["Protein"] * 100).toFixed(2)}%
-    </div>
+                <div class="card-row">
+                    <strong>Date:</strong> ${item["Date"]}
+                </div>
 
-    <div class="card-row">
-        <strong>TvBN:</strong> ${(item["TvBN"] * 100).toFixed(2)}%
-    </div>
+                <div class="card-row">
+                    <strong>Lot No:</strong> ${item["Lot No"]}
+                </div>
 
-</div>
-`;
+                <div class="card-row">
+                    <strong>Protein:</strong> ${(item["Protein"] * 100).toFixed(2)}%
+                </div>
 
-});
+                <div class="card-row">
+                    <strong>TvBN:</strong> ${(item["TvBN"] * 100).toFixed(2)}%
+                </div>
 
-resultDiv.innerHTML = resultcards;
-resultDiv.style.display = "block";
-        
+            </div>
+            `;
+        });
 
-    }catch(error){
+        resultDiv.innerHTML = resultcards;
 
-    console.error(error);
+        document.getElementById("result")
+            .style.display = "block";
 
-    document.getElementById("resultContent").innerHTML =
-    "<div class='card-row'>❌ Not found data</div>";
+    } catch (error) {
 
-    document.getElementById("result")
-    .style.display = "block";
-}
+        console.error(error);
+
+        document.getElementById("resultContent").innerHTML =
+            "<div class='card-row'>❌ Not found data</div>";
+
+        document.getElementById("result")
+            .style.display = "block";
     }
 
-    document.getElementById("loading")
-    .innerText = "";
-
+    document.getElementById("loading").innerText = "";
 });
 
 initLiff();
 
 </script>
-
 </body>
 </html>
