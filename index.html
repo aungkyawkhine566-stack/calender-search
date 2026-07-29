@@ -262,7 +262,7 @@ document
         );
 
         const data = await response.json();
-        console.log(item);
+        console.log(data);
         const resultDiv = document.getElementById("result");
 
 let resultcards = "";
@@ -277,7 +277,7 @@ resultcards += `
     </div>
 
     <div class="card-row">
-        <strong>Date:</strong> ${item.Date}
+        <strong>Date:</strong> ${item["Date"]}
     </div>
 
     <div class="card-row">
@@ -285,11 +285,11 @@ resultcards += `
     </div>
 
     <div class="card-row">
-        <strong>Protein:</strong> ${item.Protein}
+        <strong>Protein:</strong> ${(item["Protein"] * 100).toFixed(2)}%
     </div>
 
     <div class="card-row">
-        <strong>TvBN:</strong> ${item.TvBN}
+        <strong>TvBN:</strong> ${(item["TvBN"] * 100).toFixed(2)}%
     </div>
 
 </div>
@@ -297,7 +297,7 @@ resultcards += `
 
 });
 
-resultDiv.innerHTML = cards;
+resultDiv.innerHTML = resultcards;
 resultDiv.style.display = "block";
         
 
