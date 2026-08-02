@@ -276,22 +276,11 @@ document.getElementById("datePicker")
 
         let resultcards = "";
 
-const totalBags = data.reduce(
-  (sum, item) => sum + Number(item["Bags"] || 0),
-  0
-);
-        const selectedMonth = selectedDate.substring(0,7);
+let resultcards = "";
 
-const monthlyTotal = data
-  .filter(item =>
-    item["Date"] &&
-    item["Date"].startsWith(selectedMonth)
-  )
-  .reduce(
-    (sum, item) => sum + Number(item["Bags"] || 0),
-    0
-  );
-
+const dailyTotal = data[0]?.dailyTotal || 0;
+const monthlyTotal = data[0]?.monthlyTotal || 0;
+        
 resultcards += `
 <div class="summary-card">
     <h3> Summary Fishmeal Bags</h3>
