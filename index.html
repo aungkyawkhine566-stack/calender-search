@@ -280,11 +280,26 @@ const totalBags = data.reduce(
   (sum, item) => sum + Number(item["Bags"] || 0),
   0
 );
+        const selectedMonth = selectedDate.substring(0,7);
+
+const monthlyTotal = data
+  .filter(item =>
+    item["Date"] &&
+    item["Date"].startsWith(selectedMonth)
+  )
+  .reduce(
+    (sum, item) => sum + Number(item["Bags"] || 0),
+    0
+  );
 
 resultcards += `
 <div class="summary-card">
     <h3> Summary Fishmeal Bags</h3>
-    <div>Total Bags : <strong>${totalBags}</strong></div>
+    <div>Daily Total Bags : <strong>${totalBags}</strong></div>
+    <div style="margin-top:8px;">
+     Month's Total :
+    <strong>${monthlyTotal}</strong>
+  </div>
 </div>
 `;
 
